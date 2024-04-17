@@ -33,13 +33,20 @@ async function helloworld(req, res) {
 	console.log(req.query.name);
 	const response = { message: "Hello " + req.query.name + "!" };
 	res.json(response);
+}
 
+app.get('/hello', jsonParser, helloworld); 
+
+async function getTravelTime(req, res) {
+	const start = Number(req.query.start);
+	const end = Number(req.query.end);
+	const result = end - start;
+	const response = { time: result };
+	res.json(response);
 
 }
 
-
-
-app.get('/hello', jsonParser, helloworld); 
+app.get('/traveltime', jsonParser, getTravelTime);
 //async function onSaveCard(req, res) {
 //	const card = req.body; // Gets the body (Card details)
 //	const collection = db.collection('card'); 
