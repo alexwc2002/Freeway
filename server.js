@@ -8,7 +8,7 @@ const app = express();
 const jsonParser = bodyParser.json();
 
 
-app.use(express.static('test'));
+app.use(express.static('public'));
 
 let db = null;
 
