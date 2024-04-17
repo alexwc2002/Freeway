@@ -1,4 +1,4 @@
-function averageTravelTimeSubmit(){
+async function averageTravelTimeSubmit(){
 	const startInput = document.getElementById("startInput")
 	const endInput = document.getElementById("endInput")
 	const stationInput = document.getElementById("stationInput")
@@ -9,8 +9,12 @@ function averageTravelTimeSubmit(){
 	}
 	else
 	{
-		document.getElementById("travelTime").textContent = startInput.value
-		document.getElementById("volume").textContent = endInput.value
+		const req = '/traveltime?start=' + startInput.value + '&end=' + endInput.value;
+		const result = await fetch(req);
+		const json = await result.json();
+		document.getElementById('travelTime').textContent = json.time;
+		//document.getElementById("travelTime").textContent = startInput.value
+		//document.getElementById("volume").textContent = endInput.value
 	}
 }
 
