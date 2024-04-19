@@ -1,3 +1,4 @@
+
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -27,6 +28,29 @@ async function startDbAndServer() {
 
 startDbAndServer();
 
+async function getTravelTime(req, res) {
+	const start = Number(req.query.start);
+	const end = Number(req.query.end);
+	const result = end - start;
+	const response = { time: result };
+	res.json(response);
+}
+
+app.get('/traveltime', jsonParser, getTravelTime);
+
+
+async function update(req, res) {
+	const body = req.body;
+	
+	console.log(body);
+
+	const response = { test: "Test" };
+
+	res.json(response);
+
+}
+
+app.post('/updatestation', jsonParser, update)
 
 async function calculateTimeandVolume(){
 	let collection = db.collection('loopData')
@@ -124,3 +148,4 @@ async function changeStationName(){
 
 	
 }
+
