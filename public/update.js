@@ -37,18 +37,6 @@ async updateLocation(event) {
 
 
 }
-function Change_location_text(){
-	const stationID = document.getElementById("stationID")
-	const oldName = document.getElementById("oldName")
-	const newName = document.getElementById("newName")
-	if(stationID.value.length === 0  || oldName.value.length === 0 || newName.value.length === 0  )
-	{
-		document.getElementById("status").textContent = "Fill all boxes"
-	}
-	else
-	{
-		document.getElementById("status").textContent = "Failed"
-	}
-}
+
 
 new UpdateScreen();
