@@ -22,7 +22,7 @@ async function startDbAndServer() {
 	let collection = db.collection('stations')
 	console.log('Listening on port 3000');
 	
-	changeStationName()
+	//changeStationName()
 };
 
 startDbAndServer();
