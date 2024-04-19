@@ -16,69 +16,111 @@ async function startDbAndServer() {
 	// Starts the MongoDB server, and listens for connections
 	
 	client = await mongodb.connect(MONGO_URL);
-	//db = client.db('freeway-db');
+	db = client.db('freeway');
+	
 	await app.listen(3000);
+	let collection = db.collection('stations')
 	console.log('Listening on port 3000');
-	db = client.db('demo');
-    	let collection = db.collection('demoCollection');
-    	//collection.find({}).toArray((err, documents) => {
-  	//if (err) console.error(err);
-  	//else console.log("Found documents:", documents);
-
+	
+	changeStationName()
 };
 
 startDbAndServer();
 
-async function helloworld(req, res) {
-	console.log(req.query.name);
-	const response = { message: "Hello " + req.query.name + "!" };
-	res.json(response);
+
+async function calculateTimeandVolume(){
+	let collection = db.collection('loopData')
+	let collectionDetectors = db.collection('detectors')
+	let collectionStation = db.collection('stations')
+	let loc = "Sunnyside NB"
+	let stationIDs = await collectionDetectors.find({locationtext: loc}).toArray()
+	if(stationIDs.length === 0 ){
+		console.log("No detectors found with that location")
+		return 
+	}
+	let detectorIDs = []
+	let xx = 0 
+	while(xx < stationIDs.length){
+		detectorIDs.push(stationIDs[xx].detectorid)
+		xx+=1
+	}
+	xx = 0
+	let start = "2011-09-15 00:00:00-07"
+	let end = "2011-09-15 00:00:40-07"
+	let totalVolume = 0
+	let totalSpeed = 0
+	let countSpeed = 0
+	let len = 0 
+	while(xx < detectorIDs.length){
+		let volume = await collection.find({starttime: {$gte:start,$lte:end},detectorid: detectorIDs[xx]}).toArray()
+		let yy = 0 
+		let stations = await collectionStation.find({locationtext: loc}).toArray()
+		len = stations[0].length
+		while(yy < volume.length){
+			if(volume[yy].volume === undefined)
+			{ 
+			// console.log("no element volume")
+			}
+			else
+			{
+				totalVolume+=volume[yy].volume
+			}
+			if(volume[yy].speed === undefined){
+				// console.log("no element speed")
+			}else{
+				// console.log("speed",volume[yy].speed)
+				totalSpeed += volume[yy].speed
+				countSpeed += 1
+			}
+			yy+=1
+		}
+		xx+=1
+	}
+	// console.log("total Speed", totalSpeed)
+	// console.log("counts of speed inputs",countSpeed)
+	// console.log("avg speed:",totalSpeed/countSpeed)
+	let avgSpeed = totalSpeed/countSpeed
+	let travelTimeSeconds = len/avgSpeed * 3600
+	console.log("Travel time in seconds:",travelTimeSeconds)
+	console.log("Total Volume:", totalVolume)
+	// else console.log(results)
+	
 }
 
-app.get('/hello', jsonParser, helloworld); 
+async function changeStationName(){
+	let detectors = db.collection('detectors')
+	let stations = db.collection('stations')
+	let stationID = 1045
+	let newName = "Sunnyside NB"
+	let oldName = "YOOO"
+	// Check to see if the new name is already in the DB 
+	let stationInfo = await stations.find({locationtext: newName}).toArray()
+	if(stationInfo.length >= 1){
+		console.log("new name is already in the DB")
+		return
+	}
+	//filter is what we are looking to Update
+	//update is what we are looking to update it with 
+	let filter = {stationid:stationID , locationtext: oldName }
+	let update = {$set:{locationtext: newName }}
+	let resultsDetectors = await detectors.updateMany(filter,update)
+	
+	if(resultsDetectors.modifiedCount===0) 
+	{
+		console.log("no updates made to detectors collection")
+		return
+	}
+	else
+	{ 
+	console.log("results for detectors:",resultsDetectors)
+	}
+	let resultsStations = await stations.updateMany(filter,update)
+	if(resultsStations.modifiedCount===0){ 
+	console.log("no updates made to stations collection")
+	}
+	else{ 
+	console.log("results for detectors:",resultsDetectors)
+	}
 
-async function getTravelTime(req, res) {
-	const start = Number(req.query.start);
-	const end = Number(req.query.end);
-	const result = end - start;
-	const response = { time: result };
-	res.json(response);
-
+	
 }
-
-app.get('/traveltime', jsonParser, getTravelTime);
-//async function onSaveCard(req, res) {
-//	const card = req.body; // Gets the body (Card details)
-//	const collection = db.collection('card'); 
-//	const result = await collection.insertOne(card); // Saves the card
-//	const cardID = result.insertedId; // Gets the ObjectId of card
-//	res.json({ cardId: cardID }); // Sends the ObjectId in the JSON response
-//}
-//app.post('/save', jsonParser, onSaveCard);
-
-/*
- * Complete the onGetCard function, which takes in an HTTP request 'req'.
- * 'req' is sent when _loadCard() in "public/js/card-view.js" is executed
- * or when a URL (e.g., http://localhost:3000/id/5bbb8a07ebbf6a9cf4d839f5)
- * is entered in your browser. The request sends a cardID to the Node server.
- * The cardID is also a document ID in MongoDB.
- *
- * After receiving the request, the Node server should search the cardID in
- * the 'card' collection and return the content of the stored document matching
- * the cardID to the browser.
- */ 
-
-//async function onGetCard(req, res) {
-//	return;
-//	const cardID = req.params.cardId; // Gets the cardId (ObjectId)
-//	const collection = db.collection('card');
-//	const query = { _id: ObjectId(cardID) }; // Constructs the query
-//	const card = await collection.findOne(query); // Gets the associated card
-//	res.json(card); // Sends the card in the JSON response
-//}
-//app.get('/get/:cardId', onGetCard);
-//
-//async function onGetCardView(req, res) {
-//  res.sendFile(path.resolve(__dirname, 'public', 'index.html'));
-//}
-//app.get('*', onGetCardView);
