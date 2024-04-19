@@ -29,10 +29,75 @@ async function startDbAndServer() {
 startDbAndServer();
 
 async function getTravelTime(req, res) {
-	const start = Number(req.query.start);
-	const end = Number(req.query.end);
-	const result = end - start;
-	const response = { time: result };
+
+	
+	let collection = db.collection('loopData')
+	let collectionDetectors = db.collection('detectors')
+	let collectionStation = db.collection('stations')
+	let loc = req.query.station
+	let start = req.query.start
+	let end = req.query.end;
+	console.log(loc,start,end)
+	let stationIDs = await collectionDetectors.find({locationtext: loc}).toArray()
+	if(stationIDs.length === 0 ){
+		console.log("No detectors found with that location")
+		return 
+	}
+	let detectorIDs = []
+	let xx = 0 
+	while(xx < stationIDs.length){
+		detectorIDs.push(stationIDs[xx].detectorid)
+		xx+=1
+	}
+	xx = 0
+	let totalVolume = 0
+	let totalSpeed = 0
+	let countSpeed = 0
+	let len = 0 
+	while(xx < detectorIDs.length){
+		let volume = await collection.find({starttime: {$gte:start,$lte:end},detectorid: detectorIDs[xx]}).toArray()
+		console.log("volume.find:",volume)
+		let yy = 0 
+		let stations = await collectionStation.find({locationtext: loc}).toArray()
+		console.log("station.find",stations)
+		len = stations[0].length
+		console.log("len:",len)
+		if(volume.length === 0 ) break
+		while(yy < volume.length){
+			if(volume[yy].volume === undefined)
+			{ 
+			// console.log("no element volume")
+			}
+			else
+			{	
+				console.log("volume:",volume[yy].volume)
+				totalVolume+=volume[yy].volume
+			}
+			if(volume[yy].speed === undefined){
+				// console.log("no element speed")
+			}else{
+				console.log("speed",volume[yy].speed)
+				totalSpeed += volume[yy].speed
+				countSpeed += 1
+			}
+			yy+=1
+		}
+		xx+=1
+	}
+	console.log("total Speed", totalSpeed)
+	console.log("counts of speed inputs",countSpeed)
+	console.log("avg speed:",totalSpeed/countSpeed)
+	let avgSpeed = totalSpeed/countSpeed
+	let travelTimeSeconds = len/avgSpeed * 3600
+	console.log("Travel time in seconds:",travelTimeSeconds)
+	console.log("Total Volume:", totalVolume)
+	// else console.log(results)
+	if(isNaN(travelTimeSeconds)){
+		console.log("error")
+		travelTimeSeconds = "Input Error"
+		totalVolume = ""
+	}
+	const response = { time: travelTimeSeconds, volume: totalVolume };
 	res.json(response);
 }
 
@@ -42,12 +107,45 @@ app.get('/traveltime', jsonParser, getTravelTime);
 async function update(req, res) {
 	const body = req.body;
 	
-	console.log(body);
 
-	const response = { test: "Test" };
+	let finalStatus = "success"
+	let detectors = db.collection('detectors')
+	let stations = db.collection('stations')
+	let stationID = Number(req.body.station)
+	let newName = req.body.newName
+	let oldName = req.body.oldName
+	// Check to see if the new name is already in the DB 
+	let stationInfo = await stations.find({locationtext: newName}).toArray()
+	if(stationInfo.length >= 1){
+		console.log("new name is already in the DB")
+		return
+	}
+	//filter is what we are looking to Update
+	//update is what we are looking to update it with 
+	let filter = {stationid:stationID , locationtext: oldName }
+	let update = {$set:{locationtext: newName }}
+	let resultsDetectors = await detectors.updateMany(filter,update)
+	
+	if(resultsDetectors.modifiedCount===0) 
+	{
+		console.log("no updates made to detectors collection")
+		finalStatus = "Failed"
+	}
+	else
+	{ 
+	console.log("results for detectors:",resultsDetectors)
+	}
+	let resultsStations = await stations.updateMany(filter,update)
+	if(resultsStations.modifiedCount===0){ 
+	console.log("no updates made to stations collection")
+	finalStatus = "Failed"
+	}
+	else{ 
+	console.log("results for detectors:",resultsDetectors)
+	}
+	const response = { result: finalStatus };
 
 	res.json(response);
-
 }
 
 app.post('/updatestation', jsonParser, update)
@@ -69,8 +167,6 @@ async function calculateTimeandVolume(){
 		xx+=1
 	}
 	xx = 0
-	let start = "2011-09-15 00:00:00-07"
-	let end = "2011-09-15 00:00:40-07"
 	let totalVolume = 0
 	let totalSpeed = 0
 	let countSpeed = 0
