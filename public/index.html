@@ -1,26 +1,28 @@
-<script src = "frontend.js" defer></script>
-<script src = "test.js" defer> </script>
+<html>
 
-<h2>Compute the Average Travel Time and Total Volume for a Station</h2>
-<a href="Change_location_text.html">Change Location</a>
-<br></br>
-<strong>INPUT:</strong>
-<input type = "text" id="startInput" placeholder = "start date/time" ></input>
-<input type = "text" id="endInput" placeholder = "end date/time" ></input>
-<input type = "text" id="stationInput" placeholder = "station" ></input>
+<script src = "compute.js" defer></script>
 
-<br></br>
-<input type = "text" id="name" placeholder="Enter name"></input>
+<body>
+    <h2>Compute the Average Travel Time and Total Volume for a Station</h2>
+    <a href="update.html">Change Location</a>
+    <br></br>
 
-<br></br>
-<button type="button" onclick="averageTravelTimeSubmit()" >Submit</button>
-<br></br>
+    <strong>INPUT:</strong>
 
-<button type="button" onclick="getGreeting()" >Get greeting</button>
+    <form id="compute">
+        <input type="text" id="start" name="start" placeholder="start date/time" >
+        <input type="text" id="end" name="end" placeholder="end date/time">
+        <input type="text" id="station" name="station" placeholder="station">
 
-<br></br>
+        <br></br>
 
-<strong>OUTPUT:</strong>
-<p id ="travelTime"></p>
-<p id ="volume"></p>
-<p id="greeting"></p>
+        <input type="submit" value="Submit">
+    </form>
+
+    <strong>OUTPUT:</strong>
+    <p id ="travelTime"></p>
+    <p id ="volume"></p>
+    <p id="greeting"></p>
+</body>
+
+</html>
