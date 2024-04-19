@@ -2,3 +2,4 @@ data/db/*
 node_modules/
 package-lock.json
 *.csv
+data.zip

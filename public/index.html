@@ -1,4 +1,6 @@
 <script src = "frontend.js" defer></script>
+<script src = "test.js" defer> </script>
+
 <h2>Compute the Average Travel Time and Total Volume for a Station</h2>
 <a href="Change_location_text.html">Change Location</a>
 <br></br>
@@ -6,11 +8,19 @@
 <input type = "text" id="startInput" placeholder = "start date/time" ></input>
 <input type = "text" id="endInput" placeholder = "end date/time" ></input>
 <input type = "text" id="stationInput" placeholder = "station" ></input>
+
+<br></br>
+<input type = "text" id="name" placeholder="Enter name"></input>
+
 <br></br>
 <button type="button" onclick="averageTravelTimeSubmit()" >Submit</button>
 <br></br>
- 
+
+<button type="button" onclick="getGreeting()" >Get greeting</button>
+
+<br></br>
+
 <strong>OUTPUT:</strong>
 <p id ="travelTime"></p>
 <p id ="volume"></p>
-
+<p id="greeting"></p>
