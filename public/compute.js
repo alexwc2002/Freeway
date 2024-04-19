@@ -26,6 +26,8 @@ class ComputeScreen {
 		
 		document.getElementById('travelTime').textContent = json.time;	
 		
+		document.getElementById('volume').textContent = json.volume
+		
 	}
 }
 
