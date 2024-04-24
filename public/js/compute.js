@@ -10,6 +10,11 @@ class ComputeScreen {
 	async averageTravelTimeSubmit(event){
 		event.preventDefault();
 
+		document.getElementById('travelTime').value = "";
+
+		document.getElementById('volume').value = "";
+
+
 		const formData = new FormData(event.target);
 
 		console.log(event.target);
@@ -18,15 +23,15 @@ class ComputeScreen {
 
 		console.log(params);
 
+		//return;
+
 		const result = await fetch('/traveltime?' + params);
 
 		const json = await result.json();
 
-		console.log(json.time);
+		document.getElementById('travelTime').value = json.time;	
 		
-		document.getElementById('travelTime').textContent = json.time;	
-		
-		document.getElementById('volume').textContent = json.volume
+		document.getElementById('volume').value = json.volume;
 		
 	}
 }
