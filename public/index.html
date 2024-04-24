@@ -1,28 +1,27 @@
 <html>
-
-<script src = "compute.js" defer></script>
-
-<body>
-    <h2>Compute the Average Travel Time and Total Volume for a Station</h2>
-    <a href="update.html">Change Location</a>
-    <br></br>
-
-    <strong>INPUT:</strong>
-
-    <form id="compute">
-        <input type="text" id="start" name="start" placeholder="start date/time" >
-        <input type="text" id="end" name="end" placeholder="end date/time">
-        <input type="text" id="station" name="station" placeholder="station">
-
-        <br></br>
-
-        <input type="submit" value="Submit">
-    </form>
-
-    <strong>OUTPUT:</strong>
-    <p id ="travelTime"></p>
-    <p id ="volume"></p>
-    <p id="greeting"></p>
-</body>
-
+    <link rel="stylesheet" href="/css/compute-style.css">
+    <script src="/js/compute.js" defer></script>
+    <body>
+        <div class="screen">
+            <h2 class="header">Compute the Average Travel Time and Total Volume for a Station</h2>
+            <a class="link" href="update.html">Change Location</a>
+            <br></br>
+            <form id="compute">
+                <div class="inputs">
+                    <strong>INPUT:</strong>
+                    <input type="text" id="start" name="start" placeholder="start date/time" >
+                    <input type="text" id="end" name="end" placeholder="end date/time">
+                    <input type="text" id="station" name="station" placeholder="station">
+                </div>
+                <br></br>
+                <input type="submit" value="Submit">
+            </form>
+            <br></br>
+            <div class="outputs">
+                <strong class="output">OUTPUT:</strong>
+                <input type="text" id ="travelTime" placeholder="travel time">
+                <input type="text" id ="volume" placeholder="volume">
+            </div>
+        </div>
+    </body>
 </html>

@@ -10,7 +10,6 @@ async updateLocation(event) {
     event.preventDefault();
 
     const formData = new FormData(event.target);
-    // Convert FormData to JSON
     const jsonData = Object.fromEntries(formData.entries());
     const jsonString = JSON.stringify(jsonData);
 

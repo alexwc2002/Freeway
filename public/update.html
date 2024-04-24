@@ -1,25 +1,19 @@
 <html>
-    <script src="update.js" defer></script>
-
+    <script src="/js/update.js" defer></script>
+    <link rel="stylesheet" href="/css/update-style.css">
     <body>
-        <h2>Change Location Name</h2>
-        <a href="index.html">Average Travel Time</a>
-
-        <br></br>
-        <strong>INPUT:</strong>
-        
-        <form id="update">
-            <input type = "text" id="station" name="station" placeholder = "Station ID" ></input>
-            <input type = "text" id="oldName" name="oldName" placeholder = "Old Name" ></input>
-            <input type = "text" id="newName" name="newName" placeholder = "New Name" ></input>
-            
+        <div class="screen">
+            <h2>Change Location Name</h2>
+            <a href="index.html">Average Travel Time</a>
             <br></br>
-
-            <input type="submit" value="Submit">
-
-
-        </form>
+            <form id="update">
+                <strong>INPUT:</strong>
+                <input type = "text" id="station" name="station" placeholder = "Station ID" ></input>
+                <input type = "text" id="oldName" name="oldName" placeholder = "Old Name" ></input>
+                <input type = "text" id="newName" name="newName" placeholder = "New Name" ></input>
+                <br></br>
+                <input type="submit" value="Submit">
+            </form>
+        </div>
     </body>
-
-
 </html>
