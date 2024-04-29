@@ -1,5 +1,7 @@
 data/db/*
+data2/db/*
 node_modules/
 package-lock.json
 *.csv
 data.zip
+*.zip
